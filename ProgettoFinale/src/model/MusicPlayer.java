@@ -22,6 +22,8 @@ public class MusicPlayer implements Runnable {
     private MediaPlayer mediaPlayer;
     private ArrayList<Song> playlist;
     private int currentIndex = -1;
+    Song currentSong;
+    private boolean reproducing = false;
     private boolean looping = false;
     private boolean shuffling = false;
     
@@ -29,7 +31,6 @@ public class MusicPlayer implements Runnable {
     public HashMap<String, Song> allSongs = new HashMap<>();
     
     public MusicPlayer() {
-        mediaPlayer = new MediaPlayer(null);
         playlist = new ArrayList<>();
     }
     
@@ -47,6 +48,8 @@ public class MusicPlayer implements Runnable {
             mediaPlayer = new MediaPlayer(media);
             
             mediaPlayer.play();
+            setReproducing(true);
+            setCurrentSong(song);
             
             mediaPlayer.setOnEndOfMedia(() -> {
                 mediaPlayer.stop();
@@ -65,8 +68,11 @@ public class MusicPlayer implements Runnable {
         }
     }
     
+    
+    
     public void stop() {
         mediaPlayer.stop();
+        setReproducing(false);
         songSemaphore.release();
     }
     
@@ -74,8 +80,16 @@ public class MusicPlayer implements Runnable {
         looping = loop;
     }
     
+    public boolean isLooping() {
+    	return looping;
+    }
+    
     public void setShuffling(boolean shuffle) {
         shuffling = shuffle;
+    }
+    
+    public boolean isShuffling() {
+    	return shuffling;
     }
     
     public void addToPlaylist(Song song) {
@@ -97,7 +111,7 @@ public class MusicPlayer implements Runnable {
     }
     
     private Song getRandomSong() {
-        return playlist.get(0);
+        return playlist.get((int) (Math.random()*playlist.size()+0));
     }
     
     public void loadPlaylist(String title) {
@@ -179,4 +193,20 @@ public class MusicPlayer implements Runnable {
             System.out.println("Impossibile rimuovere la playlist");
         }
     }
+
+	public boolean isReproducing() {
+		return reproducing;
+	}
+
+	public void setReproducing(boolean reproducing) {
+		this.reproducing = reproducing;
+	}
+
+	public Song getCurrentSong() {
+		return currentSong;
+	}
+
+	public void setCurrentSong(Song currentSong) {
+		this.currentSong = currentSong;
+	}
 }

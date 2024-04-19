@@ -9,11 +9,16 @@ import java.awt.GridBagLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JTextArea;
+
+import controller.Controller;
 
 public class Pannello extends JPanel {
 
@@ -25,11 +30,12 @@ public class Pannello extends JPanel {
 	ImageIcon fowardimg = new ImageIcon("Documents/progetto_finale_images/foward.png");
 	ImageIcon pauseimg = new ImageIcon("Documents/progetto_finale_images/pause.png");
 	
-	JButton playSong;
+	JButton playSong, btnShuffle, btnBack, btnPlay, btnFoward, btnLoop;
+	JTextArea songReproducing;
 	JPanel PlaylistPanel, CommandPanel;
 	
 	MusicPlayer musicPlayer = new MusicPlayer();
-
+	
 	public Pannello() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -39,10 +45,11 @@ public class Pannello extends JPanel {
 		setLayout(gridBagLayout);
 		
 		JLabel logo = new JLabel(iconimg);
+		logo.setText("logo");
 		GridBagConstraints gbc_logo = new GridBagConstraints();
 		gbc_logo.insets = new Insets(0, 0, 5, 5);
-		gbc_logo.gridx = 6;
-		gbc_logo.gridy = 2;
+		gbc_logo.gridx = 7;
+		gbc_logo.gridy = 1;
 		add(logo, gbc_logo);
 		
 		JLabel welcome = new JLabel("Benvenuto!");
@@ -50,7 +57,7 @@ public class Pannello extends JPanel {
 		gbc_welcome.insets = new Insets(0, 0, 5, 5);
 		gbc_welcome.anchor = GridBagConstraints.BELOW_BASELINE;
 		gbc_welcome.gridx = 20;
-		gbc_welcome.gridy = 2;
+		gbc_welcome.gridy = 1;
 		add(welcome, gbc_welcome);
 		
 		PlaylistPanel = new JPanel();
@@ -72,18 +79,68 @@ public class Pannello extends JPanel {
 		CommandPanel = new JPanel();
 		GridBagConstraints gbc_CommandPanel = new GridBagConstraints();
 		gbc_CommandPanel.gridwidth = 16;
-		gbc_CommandPanel.gridheight = 3;
+		gbc_CommandPanel.gridheight = 2;
 		gbc_CommandPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_CommandPanel.fill = GridBagConstraints.BOTH;
 		gbc_CommandPanel.gridx = 6;
-		gbc_CommandPanel.gridy = 11;
+		gbc_CommandPanel.gridy = 12;
 		add(CommandPanel, gbc_CommandPanel);
 		GridBagLayout gbl_CommandPanel = new GridBagLayout();
-		gbl_CommandPanel.columnWidths = new int[]{0};
-		gbl_CommandPanel.rowHeights = new int[]{0};
-		gbl_CommandPanel.columnWeights = new double[]{Double.MIN_VALUE};
-		gbl_CommandPanel.rowWeights = new double[]{Double.MIN_VALUE};
+		gbl_CommandPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_CommandPanel.rowHeights = new int[]{0, 0, 0, 0, 0};
+		gbl_CommandPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_CommandPanel.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
 		CommandPanel.setLayout(gbl_CommandPanel);
+		
+		btnPlay = new JButton("play");
+		GridBagConstraints gbc_btnPlay = new GridBagConstraints();
+		gbc_btnPlay.insets = new Insets(0, 0, 0, 5);
+		gbc_btnPlay.gridheight = 5;
+		gbc_btnPlay.gridx = 2;
+		gbc_btnPlay.gridy = 0;
+		CommandPanel.add(btnPlay, gbc_btnPlay);
+		
+		btnBack = new JButton("back");
+		GridBagConstraints gbc_btnBack = new GridBagConstraints();
+		gbc_btnBack.gridheight = 5;
+		gbc_btnBack.insets = new Insets(0, 0, 0, 5);
+		gbc_btnBack.gridx = 1;
+		gbc_btnBack.gridy = 0;
+		CommandPanel.add(btnBack, gbc_btnBack);
+		
+		btnFoward = new JButton("foward");
+		GridBagConstraints gbc_btnFoward = new GridBagConstraints();
+		gbc_btnFoward.gridheight = 5;
+		gbc_btnFoward.insets = new Insets(0, 0, 0, 5);
+		gbc_btnFoward.gridx = 3;
+		gbc_btnFoward.gridy = 0;
+		CommandPanel.add(btnFoward, gbc_btnFoward);
+		
+		btnShuffle = new JButton("shuffle");
+		GridBagConstraints gbc_btnShuffle = new GridBagConstraints();
+		gbc_btnShuffle.gridheight = 5;
+		gbc_btnShuffle.insets = new Insets(0, 0, 0, 5);
+		gbc_btnShuffle.gridx = 0;
+		gbc_btnShuffle.gridy = 0;
+		CommandPanel.add(btnShuffle, gbc_btnShuffle);
+		
+		btnLoop = new JButton("loop");
+		GridBagConstraints gbc_btnLoop = new GridBagConstraints();
+		gbc_btnLoop.gridheight = 5;
+		gbc_btnLoop.insets = new Insets(0, 0, 0, 5);
+		gbc_btnLoop.gridx = 4;
+		gbc_btnLoop.gridy = 0;
+		CommandPanel.add(btnLoop, gbc_btnLoop);
+		
+		songReproducing = new JTextArea();
+		GridBagConstraints gbc_textArea = new GridBagConstraints();
+		gbc_textArea.gridheight = 3;
+		gbc_textArea.gridwidth = 5;
+		gbc_textArea.insets = new Insets(0, 0, 5, 5);
+		gbc_textArea.fill = GridBagConstraints.BOTH;
+		gbc_textArea.gridx = 5;
+		gbc_textArea.gridy = 2;
+		CommandPanel.add(songReproducing, gbc_textArea);
 		
 		generatePlaylistButton();
 		
@@ -104,6 +161,7 @@ public class Pannello extends JPanel {
 		    playSong.addActionListener(e -> {
 		        Song toPlay = songs.get(index);
 		        musicPlayer.play(toPlay);
+		        setText(toPlay.getTitle()+ "\n" + toPlay.getAuthor());
 		    });
 			GridBagConstraints gbc_play = new GridBagConstraints();
 			gbc_play.insets = new Insets(0, 0, 0, 5);
@@ -145,5 +203,24 @@ public class Pannello extends JPanel {
 			y++;
 		}
 	}
-
+	
+	
+	public void registraEventi(Controller c) {
+		btnShuffle.addActionListener(c);
+		btnBack.addActionListener(c);
+		btnPlay.addActionListener(c);
+		btnFoward.addActionListener(c);
+		btnLoop.addActionListener(c);
+		
+	}
+	
+	public void setText(String text) {
+		songReproducing.setText(text);
+	}
+	
+	public void popup(String text) {
+		JOptionPane.showMessageDialog(this, text);
+	}
+	
+	
 }
