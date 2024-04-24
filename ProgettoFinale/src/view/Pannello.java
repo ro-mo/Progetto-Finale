@@ -24,6 +24,7 @@ import controller.Controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.JScrollPane;
 
 public class Pannello extends JPanel {
 
@@ -52,7 +53,7 @@ public class Pannello extends JPanel {
 	ImageIcon pauseimg = new ImageIcon(pause);
 	
 	
-	JButton playSong, btnShuffle, btnBack, btnPlay, btnForward, btnLoop;
+	JButton playSong, btnShuffle, btnBack, btnPlay, btnForward, btnLoop, btnPause;
 	JTextArea songReproducing;
 	JPanel PlaylistPanel, CommandPanel, mainPanel;
 	JLabel logo, welcome;
@@ -88,7 +89,9 @@ public class Pannello extends JPanel {
         gbc_mainPanel.fill = GridBagConstraints.BOTH; // set fill to BOTH to fill both horizontal and vertical space
         gbc_mainPanel.gridx = 1; // set gridx to 1
         gbc_mainPanel.gridy = 0; // set gridy to 0
-        add(mainPanel, gbc_mainPanel);
+        JScrollPane mainScrollPane = new JScrollPane(mainPanel);
+        mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(mainScrollPane, gbc_mainPanel);
 
         CommandPanel = new JPanel();
         CommandPanel.setBackground(Color.DARK_GRAY);
@@ -115,8 +118,9 @@ public class Pannello extends JPanel {
         gbc_PlaylistPanel.insets = new Insets(0, 0, 0, 5); // set insets to add some padding
         gbc_PlaylistPanel.gridx = 0; // set gridx to 0
         gbc_PlaylistPanel.gridy = 0; // set gridy to 0
-        add(PlaylistPanel, gbc_PlaylistPanel);
-
+        JScrollPane playlistScrollPane = new JScrollPane(PlaylistPanel);
+        playlistScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(playlistScrollPane, gbc_PlaylistPanel);
 
         songReproducing = new JTextArea();
         songReproducing.setForeground(Color.WHITE);
@@ -125,7 +129,7 @@ public class Pannello extends JPanel {
         gbc_textArea.gridheight = 3;
         gbc_textArea.gridwidth = 3;
         gbc_textArea.fill = GridBagConstraints.BOTH;
-        gbc_textArea.gridx = 1;
+        gbc_textArea.gridx = 6;
         gbc_textArea.gridy = 8;
         CommandPanel.add(songReproducing, gbc_textArea);
 
@@ -166,6 +170,18 @@ public class Pannello extends JPanel {
         gbc_btnPlay.gridx = 3;
         gbc_btnPlay.gridy = 6;
         CommandPanel.add(btnPlay, gbc_btnPlay);
+        
+        btnPause = new JButton();
+        btnPause.setName("pause");
+        btnPause.setBorderPainted(false);
+        btnPause.setIcon(pauseimg);
+        btnPause.setFocusPainted(false);
+        GridBagConstraints gbc_btnPause = new GridBagConstraints();
+        gbc_btnPause.gridheight = 5;
+        gbc_btnPause.insets = new Insets(0, 0, 0, 5);
+        gbc_btnPause.gridx = 3;
+        gbc_btnPause.gridy = 6;
+        CommandPanel.add(btnPlay, gbc_btnPause);
 
         btnForward = new JButton();
         btnForward.setBackground(Color.DARK_GRAY);
@@ -196,41 +212,46 @@ public class Pannello extends JPanel {
 
     }
 
-	
 	public void generateSongsButton(String playlistName) {
-		ArrayList<Song> songs = new ArrayList<Song>();
-		for(String song : m.allSongs.keySet()) {
-			if(song.equals(playlistName)) {
-				songs.add(m.allSongs.get(song));
-			}
-		}
-		int posYPlay=5, posYSongAttributes=5;
-		for(int i=1; i <= songs.size(); i++) {
-			final int index = i;
-		    playSong = new JButton("" + index, playimg);
-		    playSong.addActionListener(e -> {
-		        Song toPlay = songs.get(index-1);
-		        m.play(toPlay);
-		        setText(toPlay.getTitle()+ "\n" + toPlay.getAuthor());
-		    });
-		    playSong.setVisible(true);
-			GridBagConstraints gbc_play = new GridBagConstraints();
-			gbc_play.insets = new Insets(0, 0, 0, 5);
-			gbc_play.gridx = 2;
-			gbc_play.gridy = posYPlay;
-			mainPanel.add(playSong, gbc_play);
-				
-			JLabel songAttributes = new JLabel(songs.get(i).getTitle() + "\n" + songs.get(i).getAuthor());
-			GridBagConstraints gbc_songAttributes = new GridBagConstraints();
-			gbc_songAttributes.gridwidth = 10;
-			gbc_songAttributes.gridx = 3;
-			gbc_songAttributes.gridy = posYSongAttributes;
-			add(songAttributes, gbc_songAttributes);
-			songAttributes.setVisible(true);
-			
-			posYPlay++;
-			posYSongAttributes++;
-		}
+	    ArrayList<Song> songs = new ArrayList<>();
+	    for (HashMap.Entry<String, Song> entry : m.allSongs.entrySet()) {
+	        if (entry.getKey().equals(playlistName)) {
+	            songs.add(entry.getValue());
+	        }
+	    }
+	    int posYPlay = 5, posYSongAttributes = 5;
+	    for (int i = 0; i < songs.size(); i++) {
+	        final int index = i;
+	        JButton playSong = new JButton(playimg);
+	        playSong.addActionListener(e -> {
+	            Song toPlay = songs.get(index);
+	            m.play(toPlay);
+	            setText(toPlay.getTitle() + "\n" + toPlay.getAuthor());
+	        });
+	        playSong.setName("");
+	        playSong.setBorderPainted(false);
+	        playSong.setIcon(playimg);
+	        playSong.setFocusPainted(false);
+	        playSong.setVisible(true);
+	        GridBagConstraints gbc_play = new GridBagConstraints();
+	        gbc_play.anchor = GridBagConstraints.WEST; // Allinea il pulsante a sinistra
+	        gbc_play.insets = new Insets(0, 0, 0, 5);
+	        gbc_play.gridx = 2;
+	        gbc_play.gridy = posYPlay;
+	        mainPanel.add(playSong, gbc_play);
+
+	        JLabel songAttributes = new JLabel(songs.get(i).getTitle() + "\t\t\t\t\t\t\t" + songs.get(i).getAuthor());
+	        GridBagConstraints gbc_songAttributes = new GridBagConstraints();
+	        gbc_songAttributes.anchor = GridBagConstraints.WEST; // Allinea l'etichetta a sinistra
+	        gbc_songAttributes.gridwidth = 10;
+	        gbc_songAttributes.gridx = 3;
+	        gbc_songAttributes.gridy = posYSongAttributes;
+	        mainPanel.add(songAttributes, gbc_songAttributes);
+	        songAttributes.setVisible(true);
+
+	        posYPlay++;
+	        posYSongAttributes++;
+	    }
 	}
 	
 	public void generatePlaylistButton() {
@@ -247,23 +268,16 @@ public class Pannello extends JPanel {
 	            clearSongButtons();
 	            generateSongsButton(name);
 	        });
-	        
 	        GridBagConstraints gbc_btnPlaylist = new GridBagConstraints();
 	        gbc_btnPlaylist.insets = new Insets(0, 0, 5, 0);
 	        gbc_btnPlaylist.gridwidth = 4;
-	        gbc_btnPlaylist.gridx = 1;
+	        gbc_btnPlaylist.gridx = GridBagConstraints.RELATIVE;
 	        gbc_btnPlaylist.gridy = y;
-	        
-	        System.out.println("Aggiungo il pulsante per la playlist: " + name);
-	        
 	        PlaylistPanel.add(btnPlaylist, gbc_btnPlaylist);
 	        btnPlaylist.setVisible(true);
 	        y++;
 	    }
-
-	}
-
-	
+	}	
 	
 	public void registraEventi(Controller c) {
 		btnShuffle.addActionListener(c);
@@ -271,20 +285,30 @@ public class Pannello extends JPanel {
 		btnPlay.addActionListener(c);
 		btnForward.addActionListener(c);
 		btnLoop.addActionListener(c);
-		
+		btnPause.addActionListener(c);
 	}
 	
 	public void clearSongButtons() {
-	    Component[] components = getComponents();
+	    Component[] components = mainPanel.getComponents();
 	    for (Component component : components) {
-	        if (component instanceof JButton || (component instanceof JLabel && (component != logo && component != welcome))) {
-	            remove(component);
+	        if (component != logo && (component instanceof JButton || (component instanceof JLabel && component != logo))) {
+	            mainPanel.remove(component);
 	        }
 	    }
-	    revalidate();
-	    repaint();
+	    mainPanel.revalidate();
+	    mainPanel.repaint();
 	}
 
+	
+	public void setIsReproducing() {
+		btnPlay.setVisible(false);
+		btnPause.setVisible(true);
+	}
+	
+	public void setIsPause() {
+		btnPlay.setVisible(true);
+		btnPause.setVisible(false);
+	}
 	
 	public void setText(String text) {
 		songReproducing.setText(text);

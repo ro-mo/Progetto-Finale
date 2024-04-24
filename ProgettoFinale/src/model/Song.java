@@ -51,8 +51,5 @@ public class Song {
 		return title + "\n" + author;
 	}
 	
-	
-	
-	
 
 }

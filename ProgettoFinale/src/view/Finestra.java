@@ -15,6 +15,7 @@ public class Finestra extends JFrame implements WindowListener{
         setSize(1280, 720);
         setResizable(true);
         setLocationRelativeTo(null);
+        setName("Javify");
 
         contentPane = new Pannello();
         setContentPane(contentPane);

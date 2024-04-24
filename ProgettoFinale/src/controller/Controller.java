@@ -16,22 +16,21 @@ public class Controller implements ActionListener {
         this.pannello = pannello;
         this.pannello.registraEventi(this);
     }
-
-    @Override
+    
+	@Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand().toLowerCase()) {
             case "play":
                 if (!musicPlayer.isReproducing()) {
-                    pannello.popup("Nessuna canzone in riproduzione");
-                } else {
-                    musicPlayer.play(musicPlayer.getCurrentSong());
-                    Thread musicThread = new Thread(musicPlayer);
-                    musicThread.start();
+                	int size = musicPlayer.getSize();
+                	musicPlayer.play(musicPlayer.allSongs.get(Math.random() * size + 0));
+                	pannello.setIsReproducing();
                 }
                 break;
             case "stop":
                 if (musicPlayer.isReproducing()) {
                     musicPlayer.stop();
+                    pannello.setIsPause();
                 }
                 break;
             case "back":

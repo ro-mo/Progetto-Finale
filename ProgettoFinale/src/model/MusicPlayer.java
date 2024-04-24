@@ -1,21 +1,9 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.TagException;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -142,43 +130,43 @@ public class MusicPlayer implements Runnable {
     public HashMap<String, Song> loadAllSongs(String parentFolderPath) {
     	
         File parentFolder = new File(parentFolderPath);
-        
+
         if (parentFolder.exists() && parentFolder.isDirectory()) {
-        	
-        	File[] playlistFolders = parentFolder.listFiles(File::isDirectory);
-         
-        	if (playlistFolders != null) {
-        		for (File playlistFolder : playlistFolders) {
+            File[] playlistFolders = parentFolder.listFiles(File::isDirectory);
+
+            if (playlistFolders != null) {
+                for (File playlistFolder : playlistFolders) {
                     Song song = loadSongs(playlistFolder);
-                    allSongs.put(playlistFolder.getName(), song);
+                    if (song != null) {
+                        allSongs.put(playlistFolder.getName(), song);
+                    }
                 }
-        	}
+            }
         } else {
-        	System.out.println("La cartella genitore non esiste o non è una directory.");
+            System.out.println("La cartella genitore non esiste o non è una directory.");
         }
 
         return allSongs;
     }
-	
+
     public Song loadSongs(File playlistFolder) {
         File[] songFiles = playlistFolder.listFiles();
-        
+
         if (songFiles != null) {
             for (File songFile : songFiles) {
-                try (AudioInputStream stream = AudioSystem.getAudioInputStream(songFile)) {
-                    String title = songFile.getName().replaceFirst("[.][^.]+$", "");
-                    String[] parts = title.split("/");
-                    String songTitle = parts[0].trim();
-                    String songArtist = (parts.length > 1) ? parts[1].trim() : "Sconosciuto";
-                    AudioFile audioFile = AudioFileIO.read(songFile);
-                    int duration = audioFile.getAudioHeader().getTrackLength() * 1000;
-                    return new Song(songTitle, songArtist, songFile.getAbsolutePath(), duration);
-                } catch (IOException | UnsupportedAudioFileException | CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
-                    e.printStackTrace();
-                }
+                Media media = new Media(songFile.toURI().toString());
+
+                String name = songFile.getName();
+                String parts[] = name.split("_");
+                String songTitle = parts[0].trim();
+                String songArtist = (parts.length > 1) ? parts[1].replace(".mp3", "").trim() : "Sconosciuto";
+
+                int duration = (int) media.getDuration().toMillis();
+
+                return new Song(songTitle, songArtist, songFile.getAbsolutePath(), duration);
             }
         }
-        
+
         return null;
     }
 
@@ -219,6 +207,10 @@ public class MusicPlayer implements Runnable {
 
 	public void setCurrentSong(Song currentSong) {
 		this.currentSong = currentSong;
+	}
+	
+	public int getSize() {
+		return allSongs.size();
 	}
 	
 	public String getStandardPath() {
