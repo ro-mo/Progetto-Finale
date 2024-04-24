@@ -48,7 +48,7 @@ public class Song {
 
 	@Override
 	public String toString() {
-		return title + "\t" + author;
+		return title + "\n" + author;
 	}
 	
 	

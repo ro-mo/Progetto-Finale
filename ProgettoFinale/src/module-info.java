@@ -4,9 +4,8 @@
 /**
  * 
  */
-module ProgettoFinale {
+module progettoFinale2 {
 	requires java.desktop;
-	requires jaudiotagger;
 	requires javafx.media;
-
+	requires jaudiotagger;
 }

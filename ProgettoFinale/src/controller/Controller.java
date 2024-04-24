@@ -7,46 +7,52 @@ import model.MusicPlayer;
 import view.Pannello;
 
 public class Controller implements ActionListener {
-	
-	MusicPlayer m = new MusicPlayer();
-	Pannello p = new Pannello();
+    
+    private MusicPlayer musicPlayer;
+    private Pannello pannello;
 
-	public Controller(MusicPlayer m, Pannello p) {
-		this.m = m;
-		this.p = p;
-		p.registraEventi(this);
-	}
+    public Controller(MusicPlayer musicPlayer, Pannello pannello) {
+        this.musicPlayer = musicPlayer;
+        this.pannello = pannello;
+        this.pannello.registraEventi(this);
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equalsIgnoreCase("play")) {
-			if(!m.isReproducing()) {
-				p.popup("Nessuna canzone in riproduzione");
-			}else{
-				m.play(m.getCurrentSong());
-			}
-		}else if(e.getActionCommand().equalsIgnoreCase("back")) {
-			m.stop();
-			m.goBack();
-			p.setText(m.getCurrentSong().getTitle()+ "\n" + m.getCurrentSong().getAuthor());
-		}else if(e.getActionCommand().equalsIgnoreCase("foward")) {
-			m.stop();
-			m.goForward();
-			p.setText(m.getCurrentSong().getTitle()+ "\n" + m.getCurrentSong().getAuthor());
-		}else if(e.getActionCommand().equalsIgnoreCase("loop")) {
-			if(!m.isLooping()) {
-				m.setLooping(true);
-			}else {
-				m.setLooping(false);
-			}
-		}else if(e.getActionCommand().equalsIgnoreCase("shuffle")) {
-			if(!m.isShuffling()) {
-				m.setShuffling(true);
-			}else {
-				m.setShuffling(false);
-			}
-		}
-		
-	}
-
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand().toLowerCase()) {
+            case "play":
+                if (!musicPlayer.isReproducing()) {
+                    pannello.popup("Nessuna canzone in riproduzione");
+                } else {
+                    musicPlayer.play(musicPlayer.getCurrentSong());
+                    Thread musicThread = new Thread(musicPlayer);
+                    musicThread.start();
+                }
+                break;
+            case "stop":
+                if (musicPlayer.isReproducing()) {
+                    musicPlayer.stop();
+                }
+                break;
+            case "back":
+                musicPlayer.stop();
+                musicPlayer.goBack();
+                pannello.setText(musicPlayer.getCurrentSong().toString());
+                break;
+            case "forward":
+                musicPlayer.stop();
+                musicPlayer.goForward();
+                pannello.setText(musicPlayer.getCurrentSong().toString());
+                break;
+            case "loop":
+                musicPlayer.setLooping(!musicPlayer.isLooping());
+                break;
+            case "shuffle":
+                musicPlayer.setShuffling(!musicPlayer.isShuffling());
+                break;
+            default:
+                break;
+        }
+    }
 }
+

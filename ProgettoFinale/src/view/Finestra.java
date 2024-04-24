@@ -4,7 +4,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
-import javax.swing.border.EmptyBorder;
 
 public class Finestra extends JFrame implements WindowListener{
 	
@@ -12,15 +11,15 @@ public class Finestra extends JFrame implements WindowListener{
 	private Pannello contentPane;
 	
 	public Finestra() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new Pannello();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		addWindowListener(this);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1280, 720);
+        setResizable(true);
+        setLocationRelativeTo(null);
 
-		setContentPane(contentPane);
-		setVisible(true);
-	}
+        contentPane = new Pannello();
+        setContentPane(contentPane);
+        setVisible(true);
+    }
 
 	@Override
 	public void windowOpened(WindowEvent e) {
