@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import model.MusicPlayer;
 import model.Song;
+import controller.Controller;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -20,11 +21,11 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-import controller.Controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class Pannello extends JPanel {
 
@@ -49,9 +50,8 @@ public class Pannello extends JPanel {
 	Image foward = fowardimg1.getImage().getScaledInstance(30, -1, Image.SCALE_SMOOTH);
 	ImageIcon forwardimg = new ImageIcon(foward);
 	ImageIcon pauseimg1 = new ImageIcon(getClass().getResource("/images/pause.png"));
-	Image pause = pauseimg1.getImage().getScaledInstance(30, -1, Image.SCALE_SMOOTH);
+	Image pause = pauseimg1.getImage().getScaledInstance(40, -1, Image.SCALE_SMOOTH);
 	ImageIcon pauseimg = new ImageIcon(pause);
-	
 	
 	JButton playSong, btnShuffle, btnBack, btnPlay, btnForward, btnLoop, btnPause;
 	JTextArea songReproducing;
@@ -60,225 +60,235 @@ public class Pannello extends JPanel {
 	
 	MusicPlayer m = new MusicPlayer();
 	
-	HashMap<String, Song> allSongs = m.loadAllSongs(m.getStandardPath());
-	
 	public Pannello() {
-        setBackground(new Color(51, 51, 51));
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        gridBagLayout.columnWeights = new double[]{0.0, 0.2, 0.8, 0.0, Double.MIN_VALUE};
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1};
-        setLayout(gridBagLayout);
+		setBackground(new Color(51, 51, 51));
+	    setLayout(new GridBagLayout());
 
-        logo = new JLabel();
-        logo.setIcon(iconimg);
-        GridBagConstraints gbc_logo = new GridBagConstraints();
-        gbc_logo.insets = new Insets(0, 0, 5, 5);
-        gbc_logo.gridx = 1;
-        gbc_logo.gridy = 1;
-        add(logo, gbc_logo);
-        
-        mainPanel = new JPanel();
-        mainPanel.setBackground(Color.DARK_GRAY);
-        GridBagConstraints gbc_mainPanel = new GridBagConstraints();
-        gbc_mainPanel.gridheight = 9; // set gridheight to 9 to span 9 rows
-        gbc_mainPanel.gridwidth = 3; // set gridwidth to 3 to span 3 columns
-        gbc_mainPanel.weightx = 0.7; // set weightx to 0.8 to take up 80% of the horizontal space
-        gbc_mainPanel.weighty = 55; // set weighty to 0.9 to take up 90% of the vertical space
-        gbc_mainPanel.fill = GridBagConstraints.BOTH; // set fill to BOTH to fill both horizontal and vertical space
-        gbc_mainPanel.gridx = 1; // set gridx to 1
-        gbc_mainPanel.gridy = 0; // set gridy to 0
-        JScrollPane mainScrollPane = new JScrollPane(mainPanel);
-        mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        add(mainScrollPane, gbc_mainPanel);
+	    logo = new JLabel();
+	    logo.setIcon(iconimg);
+	    GridBagConstraints gbc_logo = new GridBagConstraints();
+	    gbc_logo.insets = new Insets(0, 0, 5, 5);
+	    gbc_logo.gridx = 1;
+	    gbc_logo.gridy = 1;
+	    add(logo, gbc_logo);
 
-        CommandPanel = new JPanel();
-        CommandPanel.setBackground(Color.DARK_GRAY);
-        GridBagConstraints gbc_CommandPanel = new GridBagConstraints();
-        gbc_CommandPanel.gridwidth = GridBagConstraints.REMAINDER; // set gridwidth to REMAINDER to span all remaining columns
-        gbc_CommandPanel.gridheight = 1; // set gridheight to 1 to span only 1 row
-        gbc_CommandPanel.weightx = 0.8; // set weightx to 0.8 to take up 80% of the horizontal space
-        gbc_CommandPanel.weighty = 0.5; // set weighty to 0.0 to take up no vertical space
-        gbc_CommandPanel.fill = GridBagConstraints.BOTH; // set fill to BOTH to fill both horizontal and vertical space
-        gbc_CommandPanel.insets = new Insets(0, 0, 5, 0); // set insets to add some padding
-        gbc_CommandPanel.gridx = 1; // set gridx to 1
-        gbc_CommandPanel.gridy = 10; // set gridy to 10 to position it in the 10th row
-        add(CommandPanel, gbc_CommandPanel);
-        CommandPanel.setPreferredSize(new Dimension(800, 80)); // set preferred size to 800x80 pixels
-        
-        PlaylistPanel = new JPanel();
-        PlaylistPanel.setBackground(Color.DARK_GRAY);
-        GridBagConstraints gbc_PlaylistPanel = new GridBagConstraints();
-        gbc_PlaylistPanel.gridheight = GridBagConstraints.REMAINDER; // set gridheight to REMAINDER to span all remaining rows
-        gbc_PlaylistPanel.gridwidth = 1; // set gridwidth to 1
-        gbc_PlaylistPanel.weightx = 1; // set weightx to 0.2 to take up 20% of the horizontal space
-        gbc_PlaylistPanel.weighty = 1.0; // set weighty to 1.0 to take up all remaining vertical space
-        gbc_PlaylistPanel.fill = GridBagConstraints.BOTH; // set fill to BOTH to fill both horizontal and vertical space
-        gbc_PlaylistPanel.insets = new Insets(0, 0, 0, 5); // set insets to add some padding
-        gbc_PlaylistPanel.gridx = 0; // set gridx to 0
-        gbc_PlaylistPanel.gridy = 0; // set gridy to 0
-        JScrollPane playlistScrollPane = new JScrollPane(PlaylistPanel);
-        playlistScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        add(playlistScrollPane, gbc_PlaylistPanel);
+	    mainPanel = new JPanel();
+	    mainPanel.setLayout(new GridBagLayout()); // Aggiungiamo un GridBagLayout al mainPanel
+	    mainPanel.setBackground(Color.DARK_GRAY);
+	    JScrollPane mainScrollPane = new JScrollPane(mainPanel);
+	    mainScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	    GridBagConstraints gbc_mainPanel = new GridBagConstraints();
+	    gbc_mainPanel.gridheight = 9;
+	    gbc_mainPanel.gridwidth = 3;
+	    gbc_mainPanel.weightx = 0.8;
+	    gbc_mainPanel.weighty = 0.9;
+	    gbc_mainPanel.fill = GridBagConstraints.BOTH;
+	    gbc_mainPanel.gridx = 1;
+	    gbc_mainPanel.gridy = 0;
+	    mainScrollPane.setBorder(null);
+	    add(mainScrollPane, gbc_mainPanel);
 
-        songReproducing = new JTextArea();
-        songReproducing.setForeground(Color.WHITE);
-        songReproducing.setBackground(Color.DARK_GRAY);
-        GridBagConstraints gbc_textArea = new GridBagConstraints();
-        gbc_textArea.gridheight = 3;
-        gbc_textArea.gridwidth = 3;
-        gbc_textArea.fill = GridBagConstraints.BOTH;
-        gbc_textArea.gridx = 6;
-        gbc_textArea.gridy = 8;
-        CommandPanel.add(songReproducing, gbc_textArea);
+	    PlaylistPanel = new JPanel();
+	    PlaylistPanel.setBackground(Color.DARK_GRAY);
+	    PlaylistPanel.setLayout(new GridBagLayout());
+	    JScrollPane playlistScrollPane = new JScrollPane(PlaylistPanel);
+	    playlistScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+	    GridBagConstraints gbc_PlaylistPanel = new GridBagConstraints();
+	    gbc_PlaylistPanel.gridheight = GridBagConstraints.REMAINDER;
+	    gbc_PlaylistPanel.gridwidth = 1;
+	    gbc_PlaylistPanel.weightx = 0.2;
+	    gbc_PlaylistPanel.weighty = 1.0;
+	    gbc_PlaylistPanel.fill = GridBagConstraints.BOTH;
+	    gbc_PlaylistPanel.insets = new Insets(0, 0, 0, 5);
+	    gbc_PlaylistPanel.gridx = 0;
+	    gbc_PlaylistPanel.gridy = 0;
+	    playlistScrollPane.setBorder(null);
+	    add(playlistScrollPane, gbc_PlaylistPanel);
+
+	    CommandPanel = new JPanel();
+	    CommandPanel.setBackground(Color.DARK_GRAY);
+	    GridBagConstraints gbc_CommandPanel = new GridBagConstraints();
+	    gbc_CommandPanel.gridwidth = GridBagConstraints.REMAINDER;
+	    gbc_CommandPanel.gridheight = 1;
+	    gbc_CommandPanel.weightx = 0.8;
+	    gbc_CommandPanel.weighty = 0.0;
+	    gbc_CommandPanel.fill = GridBagConstraints.BOTH;
+	    gbc_CommandPanel.insets = new Insets(0, 0, 5, 0);
+	    gbc_CommandPanel.gridx = 1;
+	    gbc_CommandPanel.gridy = 10;
+	    add(CommandPanel, gbc_CommandPanel);
+	    CommandPanel.setPreferredSize(new Dimension(800, 80));
+          
         btnShuffle = new JButton();
         btnShuffle.setBackground(Color.DARK_GRAY);
         btnShuffle.setName("shuffle");
+        btnShuffle.setActionCommand("shuffle");
         btnShuffle.setBorderPainted(false);
         btnShuffle.setFocusPainted(false);
         btnShuffle.setIcon(shuffleimg);
         GridBagConstraints gbc_btnShuffle = new GridBagConstraints();
-        gbc_btnShuffle.gridheight = 5;
+        gbc_btnShuffle.anchor = GridBagConstraints.WEST;
         gbc_btnShuffle.insets = new Insets(0, 0, 0, 5);
         gbc_btnShuffle.gridx = 1;
-        gbc_btnShuffle.gridy = 6;
-        CommandPanel.add(btnShuffle, gbc_btnShuffle);
-
+        gbc_btnShuffle.gridy = 0;
+        CommandPanel.add(btnShuffle);
+                
         btnBack = new JButton();
         btnBack.setBackground(Color.DARK_GRAY);
         btnBack.setName("back");
+        btnBack.setActionCommand("back");
         btnBack.setBorderPainted(false);
         btnBack.setIcon(backimg);
         btnBack.setFocusPainted(false);
         GridBagConstraints gbc_btnBack = new GridBagConstraints();
-        gbc_btnBack.gridheight = 5;
+        gbc_btnBack.anchor = GridBagConstraints.WEST;
         gbc_btnBack.insets = new Insets(0, 0, 0, 5);
         gbc_btnBack.gridx = 2;
-        gbc_btnBack.gridy = 6;
-        CommandPanel.add(btnBack, gbc_btnBack);
-
+        gbc_btnBack.gridy = 0;
+        CommandPanel.add(btnBack);
+                
         btnPlay = new JButton();
         btnPlay.setName("play");
+        btnPlay.setActionCommand("play");
         btnPlay.setBorderPainted(false);
         btnPlay.setIcon(playimg);
         btnPlay.setFocusPainted(false);
         GridBagConstraints gbc_btnPlay = new GridBagConstraints();
-        gbc_btnPlay.gridheight = 5;
+        gbc_btnPlay.anchor = GridBagConstraints.NORTHWEST;
         gbc_btnPlay.insets = new Insets(0, 0, 0, 5);
-        gbc_btnPlay.gridx = 3;
-        gbc_btnPlay.gridy = 6;
+        gbc_btnPlay.gridx = 2;
+        gbc_btnPlay.gridy = 0;
         CommandPanel.add(btnPlay, gbc_btnPlay);
-        
+                        
         btnPause = new JButton();
         btnPause.setName("pause");
+        btnPause.setActionCommand("pause");
         btnPause.setBorderPainted(false);
         btnPause.setIcon(pauseimg);
         btnPause.setFocusPainted(false);
+        btnPause.setVisible(false);
         GridBagConstraints gbc_btnPause = new GridBagConstraints();
-        gbc_btnPause.gridheight = 5;
+        gbc_btnPause.anchor = GridBagConstraints.NORTHWEST;
         gbc_btnPause.insets = new Insets(0, 0, 0, 5);
-        gbc_btnPause.gridx = 3;
-        gbc_btnPause.gridy = 6;
-        CommandPanel.add(btnPlay, gbc_btnPause);
-
+        gbc_btnPause.gridx = 2;
+        gbc_btnPause.gridy = 0;
+        CommandPanel.add(btnPause, gbc_btnPause);
+        
         btnForward = new JButton();
         btnForward.setBackground(Color.DARK_GRAY);
         btnForward.setName("forward");
+        btnForward.setActionCommand("forward");
         btnForward.setBorderPainted(false);
         btnForward.setFocusPainted(false);
         btnForward.setIcon(forwardimg);
         GridBagConstraints gbc_btnForward = new GridBagConstraints();
-        gbc_btnForward.gridheight = 5;
+        gbc_btnForward.anchor = GridBagConstraints.WEST;
         gbc_btnForward.insets = new Insets(0, 0, 0, 5);
         gbc_btnForward.gridx = 4;
-        gbc_btnForward.gridy = 6;
-        CommandPanel.add(btnForward, gbc_btnForward);
-
+        gbc_btnForward.gridy = 0;
+        CommandPanel.add(btnForward);
+        
         btnLoop = new JButton();
         btnLoop.setBackground(Color.DARK_GRAY);
         btnLoop.setName("loop");
+        btnLoop.setActionCommand("loop");
         btnLoop.setBorderPainted(false);
         btnLoop.setFocusPainted(false);
         btnLoop.setIcon(loopimg);
         GridBagConstraints gbc_btnLoop = new GridBagConstraints();
-        gbc_btnLoop.gridheight = 5;
+        gbc_btnLoop.anchor = GridBagConstraints.WEST;
+        gbc_btnLoop.insets = new Insets(0, 0, 0, 5);
         gbc_btnLoop.gridx = 5;
-        gbc_btnLoop.gridy = 6;
-        CommandPanel.add(btnLoop, gbc_btnLoop);
+        gbc_btnLoop.gridy = 0;
+        CommandPanel.add(btnLoop);
         
-        generatePlaylistButton();
+        songReproducing = new JTextArea();
+        songReproducing.setForeground(Color.WHITE);
+        songReproducing.setBackground(Color.LIGHT_GRAY);
+        songReproducing.setAlignmentX(CENTER_ALIGNMENT);
+        GridBagConstraints gbc_textArea = new GridBagConstraints();
+        gbc_textArea.gridwidth = 7;
+        gbc_textArea.anchor = GridBagConstraints.WEST;
+        gbc_textArea.fill = GridBagConstraints.BOTH;
+        gbc_textArea.gridx = 5;
+        gbc_textArea.gridy = 0;
+        CommandPanel.add(songReproducing);
 
     }
 
-	public void generateSongsButton(String playlistName) {
-	    ArrayList<Song> songs = new ArrayList<>();
-	    for (HashMap.Entry<String, Song> entry : m.allSongs.entrySet()) {
-	        if (entry.getKey().equals(playlistName)) {
-	            songs.add(entry.getValue());
-	        }
-	    }
-	    int posYPlay = 5, posYSongAttributes = 5;
+	public void generateSongsButton(HashMap<String, ArrayList<Song>> allSongs, Controller c, String playlistName) {
+	    ArrayList<Song> songs = allSongs.get(playlistName);
+	    System.out.println(songs.toString());
+	    
+	    JLabel playlistTitle = new JLabel(playlistName);
+	    playlistTitle.setForeground(Color.WHITE);
+	    GridBagConstraints gbc_playlistTitle = new GridBagConstraints();
+	    gbc_playlistTitle.anchor = GridBagConstraints.CENTER;
+	    gbc_playlistTitle.gridwidth = 2; // Imposta la larghezza della cella del titolo della playlist su 2
+	    gbc_playlistTitle.gridx = 0;
+	    gbc_playlistTitle.gridy = 0; // Imposta la riga a 0 per far iniziare il titolo della playlist dalla prima riga
+	    mainPanel.add(playlistTitle, gbc_playlistTitle);
+
+	    // Aggiungi i pulsanti delle canzoni
 	    for (int i = 0; i < songs.size(); i++) {
-	        final int index = i;
 	        JButton playSong = new JButton(playimg);
-	        playSong.addActionListener(e -> {
-	            Song toPlay = songs.get(index);
-	            m.play(toPlay);
-	            setText(toPlay.getTitle() + "\n" + toPlay.getAuthor());
-	        });
-	        playSong.setName("");
+	        playSong.addActionListener(c);
+	        playSong.setActionCommand("" + i);
+	        playSong.setName("" + i);
 	        playSong.setBorderPainted(false);
 	        playSong.setIcon(playimg);
 	        playSong.setFocusPainted(false);
-	        playSong.setVisible(true);
+
 	        GridBagConstraints gbc_play = new GridBagConstraints();
-	        gbc_play.anchor = GridBagConstraints.WEST; // Allinea il pulsante a sinistra
-	        gbc_play.insets = new Insets(0, 0, 0, 5);
-	        gbc_play.gridx = 2;
-	        gbc_play.gridy = posYPlay;
+	        gbc_play.anchor = GridBagConstraints.WEST;
+	        gbc_play.insets = new Insets(5, 0, 5, 5); // Aggiungi spazio sopra e sotto ai pulsanti delle canzoni
+	        gbc_play.gridx = 0; // Imposta la colonna a 0 per far iniziare il pulsante della canzone dalla prima colonna
+	        gbc_play.gridy = i + 1; // Imposta la riga al numero della canzone più 1 per posizionarla sotto il titolo della playlist
 	        mainPanel.add(playSong, gbc_play);
 
-	        JLabel songAttributes = new JLabel(songs.get(i).getTitle() + "\t\t\t\t\t\t\t" + songs.get(i).getAuthor());
+	        JLabel songAttributes = new JLabel(songs.get(i).getTitle() + " - " + songs.get(i).getAuthor());
 	        GridBagConstraints gbc_songAttributes = new GridBagConstraints();
-	        gbc_songAttributes.anchor = GridBagConstraints.WEST; // Allinea l'etichetta a sinistra
-	        gbc_songAttributes.gridwidth = 10;
-	        gbc_songAttributes.gridx = 3;
-	        gbc_songAttributes.gridy = posYSongAttributes;
+	        gbc_songAttributes.anchor = GridBagConstraints.WEST;
+	        gbc_songAttributes.gridwidth = 1;
+	        gbc_songAttributes.insets = new Insets(5, 0, 5, 5); // Aggiungi spazio sopra e sotto al nome della canzone
+	        gbc_songAttributes.gridx = 1; // Imposta la colonna a 1 per far iniziare il nome della canzone dalla seconda colonna
+	        gbc_songAttributes.gridy = i + 1; // Imposta la riga al numero della canzone più 1 per posizionarla sotto il titolo della playlist
 	        mainPanel.add(songAttributes, gbc_songAttributes);
-	        songAttributes.setVisible(true);
+	    }
 
-	        posYPlay++;
-	        posYSongAttributes++;
-	    }
+	    // Ricalcola le dimensioni del mainPanel
+	    mainPanel.revalidate();
+	    mainPanel.repaint();
+
 	}
-	
-	public void generatePlaylistButton() {
-	    int y = 1;
-	    ArrayList<String> playlist = new ArrayList<String>();
-	    for(String name : m.allSongs.keySet()) {
-	        if(!playlist.contains(name)) {
-	            playlist.add(name);
-	        }
-	    }
-	    for(String name : playlist) {
-	        JButton btnPlaylist = new JButton(name);
-	        btnPlaylist.addActionListener(e -> {
-	            clearSongButtons();
-	            generateSongsButton(name);
-	        });
-	        GridBagConstraints gbc_btnPlaylist = new GridBagConstraints();
-	        gbc_btnPlaylist.insets = new Insets(0, 0, 5, 0);
-	        gbc_btnPlaylist.gridwidth = 4;
-	        gbc_btnPlaylist.gridx = GridBagConstraints.RELATIVE;
-	        gbc_btnPlaylist.gridy = y;
+
+	public void generatePlaylistButton(ArrayList<String> playlist, Controller c) {
+	    PlaylistPanel.removeAll();
+	    
+	    // Configura i vincoli del layout a griglia
+	    GridBagConstraints gbc_btnPlaylist = new GridBagConstraints();
+	    gbc_btnPlaylist.anchor = GridBagConstraints.WEST;
+	    gbc_btnPlaylist.insets = new Insets(10, 10, 10, 10);
+
+	    // Aggiungi i pulsanti delle playlist al pannello
+	    for (int i = 0; i < playlist.size(); i++) {
+	        JButton btnPlaylist = new JButton(playlist.get(i));
+	        btnPlaylist.setName(playlist.get(i));
+	        btnPlaylist.addActionListener(c);
+
+	        // Imposta i vincoli per posizionare il pulsante nella riga corretta e all'inizio dell'asse verticale
+	        gbc_btnPlaylist.gridx = 0;
+	        gbc_btnPlaylist.gridy = i;
+	        gbc_btnPlaylist.anchor = GridBagConstraints.NORTHWEST; // Imposta l'ancoraggio all'inizio (nord-ovest) del pannello
+
 	        PlaylistPanel.add(btnPlaylist, gbc_btnPlaylist);
-	        btnPlaylist.setVisible(true);
-	        y++;
 	    }
-	}	
-	
+
+	    // Ricalcola le dimensioni del pannello
+	    PlaylistPanel.revalidate();
+	}
+
 	public void registraEventi(Controller c) {
 		btnShuffle.addActionListener(c);
 		btnBack.addActionListener(c);
@@ -291,25 +301,24 @@ public class Pannello extends JPanel {
 	public void clearSongButtons() {
 	    Component[] components = mainPanel.getComponents();
 	    for (Component component : components) {
-	        if (component != logo && (component instanceof JButton || (component instanceof JLabel && component != logo))) {
-	            mainPanel.remove(component);
-	        }
-	    }
+	    	System.out.println(component.toString());
+			if(component != logo) {
+				mainPanel.remove(component);
+			}
+		}
 	    mainPanel.revalidate();
 	    mainPanel.repaint();
 	}
 
-	
 	public void setIsReproducing() {
-		btnPlay.setVisible(false);
-		btnPause.setVisible(true);
+	    btnPlay.setVisible(false);
+	    btnPause.setVisible(true);
 	}
-	
+
 	public void setIsPause() {
-		btnPlay.setVisible(true);
-		btnPause.setVisible(false);
+	    btnPlay.setVisible(true);
+	    btnPause.setVisible(false);
 	}
-	
 	public void setText(String text) {
 		songReproducing.setText(text);
 	}
