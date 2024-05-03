@@ -38,22 +38,29 @@ public class Controller implements ActionListener {
     }
     
     public void displaySongs(ActionEvent e, ArrayList<Song> songs) {
-    	String StrIndex = e.getActionCommand();
-    	int index = Integer.valueOf(StrIndex);
-    	if(index < songs.size()) {
-    		if(!musicPlayer.isReproducing()) {
-				musicPlayer.start(songs.get(index));
-				pannello.setText(songs.get(index).toString());
-				pannello.setIsReproducing();
-				return;
-			}else {
-				musicPlayer.stop();
-				musicPlayer.start(songs.get(index));
-				pannello.setText(songs.get(index).toString());
-				pannello.setIsReproducing();
-			}
-       	}
+        String strIndex = e.getActionCommand();
+        try {
+            int index = Integer.parseInt(strIndex);
+            if (index < songs.size()) {
+                if (!musicPlayer.isReproducing()) {
+                    musicPlayer.start(songs.get(index));
+                    pannello.setText(songs.get(index).toString());
+                    pannello.setIsReproducing();
+                    return;
+                } else {
+                    musicPlayer.stop();
+                    musicPlayer.getCurrentSong().setSavedTime(0);
+                    musicPlayer.start(songs.get(index));
+                    pannello.setText(songs.get(index).toString());
+                    pannello.setIsReproducing();
+                }
+            }
+        } catch (NumberFormatException ex) {
+            // Handle the case where the action command is not a valid integer
+            System.err.println("Invalid index: " + strIndex);
+        }
     }
+
     
     public void stopSong(ActionEvent e) {
     	String command = e.getActionCommand();
@@ -66,6 +73,59 @@ public class Controller implements ActionListener {
     	}	
     }
     
+    public void playSong(ActionEvent e) {
+    	String command = e.getActionCommand();
+    	if(command.equalsIgnoreCase("play")) {
+    		if(musicPlayer.getCurrentSong() != null) {
+		    	if (musicPlayer.getCurrentSong().getSavedTime() == 0 && !musicPlayer.isReproducing()) {
+		            musicPlayer.start(musicPlayer.getRandomSong());
+		            pannello.setIsReproducing();
+		        } else if (musicPlayer.getCurrentSong().getSavedTime() != 0 && !musicPlayer.isReproducing()) {
+		        	musicPlayer.start(musicPlayer.getCurrentSong());
+		        	pannello.setIsReproducing();
+		        }
+    		}
+    	}
+    }
+    
+    public void backSong(ActionEvent e) {
+        String command = e.getActionCommand();
+        if (command.equalsIgnoreCase("back")) {
+            musicPlayer.stop();
+            musicPlayer.goBack();
+            System.out.println(musicPlayer.getPlaylist());
+            System.out.println(musicPlayer.getCurrentSong());
+            musicPlayer.start(musicPlayer.getCurrentSong()); // Avvia la riproduzione della nuova canzone corrente
+            pannello.setText(musicPlayer.getCurrentSong().toString());
+        }
+    }
+
+    public void forwardSong(ActionEvent e) {
+        String command = e.getActionCommand();
+        if (command.equalsIgnoreCase("forward") && musicPlayer.getCurrentSong() != null) {
+            musicPlayer.stop();
+            musicPlayer.goForward();
+            musicPlayer.start(musicPlayer.getCurrentSong()); // Avvia la riproduzione della nuova canzone corrente
+            pannello.setText(musicPlayer.getCurrentSong().toString());
+        }
+    }
+
+    
+    public void loopSong(ActionEvent e) {
+    	String command = e.getActionCommand();
+    	if(command.equalsIgnoreCase("loop")) {
+    		musicPlayer.setLooping(!musicPlayer.isLooping());
+    		System.out.println("Loop - " + musicPlayer.isLooping());
+    	}
+    }
+    
+    public void shuffleSong(ActionEvent e) {
+    	String command = e.getActionCommand();
+    	if(command.equalsIgnoreCase("shuffle")) {
+    		musicPlayer.setShuffling(!musicPlayer.isShuffling());
+    	}
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action Command: " + e.getActionCommand());
@@ -76,41 +136,12 @@ public class Controller implements ActionListener {
         displaySongs(e, songs);
         
         stopSong(e);
+        playSong(e);
+        backSong(e);
+        forwardSong(e);
+        loopSong(e);
+        shuffleSong(e);
         
-        switch (e.getActionCommand().toLowerCase()) {
-            case "play":
-                System.out.println("Play button pressed");
-                if (musicPlayer.getCurrentSong().getSavedTime() == 0 && !musicPlayer.isReproducing()) {
-                    musicPlayer.start(musicPlayer.getRandomSong());
-                    pannello.setIsReproducing();
-                } else if (musicPlayer.getCurrentSong().getSavedTime() != 0 && !musicPlayer.isReproducing()) {
-                	musicPlayer.start(musicPlayer.getCurrentSong());
-                	pannello.setIsReproducing();
-                }
-                break;
-            case "back":
-                System.out.println("Back button pressed");
-                musicPlayer.stop();
-                musicPlayer.goBack();
-                musicPlayer.start(musicPlayer.getCurrentSong());
-                pannello.setText(musicPlayer.getCurrentSong().toString());
-                break;
-            case "forward":
-                System.out.println("Forward button pressed");
-                musicPlayer.stop();
-                musicPlayer.goForward();
-                musicPlayer.start(musicPlayer.getCurrentSong());
-                pannello.setText(musicPlayer.getCurrentSong().toString());
-                break;
-            case "loop":
-                System.out.println("Loop " + musicPlayer.isLooping());
-                musicPlayer.setLooping(!musicPlayer.isLooping());
-                break;
-            case "shuffle":
-                System.out.println("Shuffle button pressed");
-                musicPlayer.setShuffling(!musicPlayer.isShuffling());
-                break;
-        }
     }
 
 }
