@@ -4,10 +4,13 @@
 /**
  * 
  */
-module progettoFinale2 {
+module progettoFinale {
+	exports main;
 	requires java.desktop;
 	requires javafx.media;
-	requires jaudiotagger;
+	requires javafx.base;
+	requires javafx.controls;
 	requires javafx.graphics;
-	exports main;
+	requires javafx.swing;
+	requires javafx.web;
 }

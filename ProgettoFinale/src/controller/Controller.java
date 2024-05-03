@@ -27,38 +27,55 @@ public class Controller implements ActionListener {
         this.musicPlayer.setShuffling(false);
     }
     
+    public void changePlaylist(ActionEvent e) {
+    	String playlist = e.getActionCommand();
+    	if(playlists.contains(playlist)) {
+        	System.out.println("Generating songs button for playlist: " + playlist);
+            pannello.clearSongButtons();
+            pannello.generateSongsButton(musicPlayer.allSongs, this, playlist);
+            PlaylistName = playlist;
+    	}
+    }
+    
+    public void displaySongs(ActionEvent e, ArrayList<Song> songs) {
+    	String StrIndex = e.getActionCommand();
+    	int index = Integer.valueOf(StrIndex);
+    	if(index < songs.size()) {
+    		if(!musicPlayer.isReproducing()) {
+				musicPlayer.start(songs.get(index));
+				pannello.setText(songs.get(index).toString());
+				pannello.setIsReproducing();
+				return;
+			}else {
+				musicPlayer.stop();
+				musicPlayer.start(songs.get(index));
+				pannello.setText(songs.get(index).toString());
+				pannello.setIsReproducing();
+			}
+       	}
+    }
+    
+    public void stopSong(ActionEvent e) {
+    	String command = e.getActionCommand();
+    	if(command.equalsIgnoreCase("pause")) {
+    		if (musicPlayer.isReproducing()) {
+            	musicPlayer.saveStoppedSong();
+                musicPlayer.stop();
+                pannello.setIsPause();
+            }
+    	}	
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action Command: " + e.getActionCommand());
-        for (String string : playlists) {
-            System.out.println("Playlist: " + string);
-            if (e.getActionCommand().equalsIgnoreCase(string)) {
-                System.out.println("Generating songs button for playlist: " + string);
-                pannello.clearSongButtons();
-                pannello.generateSongsButton(musicPlayer.allSongs, this, string);
-                PlaylistName = string;
-                return;
-            }
-        }
+        
+        changePlaylist(e);
+        
         ArrayList<Song> songs = musicPlayer.getPlaylistSongs(PlaylistName);
-        int i = 0;
-        for (Song song : songs) {
-			if (e.getActionCommand().equalsIgnoreCase("" + i)) {
-				if(!musicPlayer.isReproducing()) {
-					musicPlayer.start(song);
-					pannello.setText(song.toString());
-					pannello.setIsReproducing();
-					return;
-				}else {
-					musicPlayer.stop();
-					musicPlayer.start(song);
-					pannello.setText(song.toString());
-					pannello.setIsReproducing();
-				}
-			}else {
-				i++;
-			}
-		}
+        displaySongs(e, songs);
+        
+        stopSong(e);
         
         switch (e.getActionCommand().toLowerCase()) {
             case "play":
@@ -67,28 +84,22 @@ public class Controller implements ActionListener {
                     musicPlayer.start(musicPlayer.getRandomSong());
                     pannello.setIsReproducing();
                 } else if (musicPlayer.getCurrentSong().getSavedTime() != 0 && !musicPlayer.isReproducing()) {
-                	musicPlayer.resumeStoppedSong();
+                	musicPlayer.start(musicPlayer.getCurrentSong());
                 	pannello.setIsReproducing();
-                }
-                break;
-            case "pause":
-                System.out.println("Stop button pressed");
-                if (musicPlayer.isReproducing()) {
-                	musicPlayer.saveStoppedSong();
-                    musicPlayer.stop();
-                    pannello.setIsPause();
                 }
                 break;
             case "back":
                 System.out.println("Back button pressed");
                 musicPlayer.stop();
                 musicPlayer.goBack();
+                musicPlayer.start(musicPlayer.getCurrentSong());
                 pannello.setText(musicPlayer.getCurrentSong().toString());
                 break;
             case "forward":
                 System.out.println("Forward button pressed");
                 musicPlayer.stop();
                 musicPlayer.goForward();
+                musicPlayer.start(musicPlayer.getCurrentSong());
                 pannello.setText(musicPlayer.getCurrentSong().toString());
                 break;
             case "loop":

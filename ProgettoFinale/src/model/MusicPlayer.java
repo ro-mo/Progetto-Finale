@@ -20,7 +20,7 @@ public class MusicPlayer implements Runnable {
     private boolean looping = false;
     private boolean shuffling = false;
     
-    public static String standardPath = "/Users/matteo/Documents/progettoFinale2/src/progetto_finale_songs";
+    public static String standardPath = "/Users/matteo/Documents/progettoFinale/src/progetto_finale_songs";
     public HashMap<String, ArrayList<Song>> allSongs;
     
     public MusicPlayer() {
@@ -50,32 +50,23 @@ public class MusicPlayer implements Runnable {
             
             mediaPlayer = new MediaPlayer(media);
             
-            double startTime = song.getSavedTime(); // Ottieni il tempo di inizio salvato della canzone
-            System.out.println(startTime);
-            // Imposta il tempo di inizio della canzone se è stato salvato, altrimenti inizia dalla posizione di default (0)
-            if (startTime != -1) {
-                mediaPlayer.setStartTime(Duration.millis(startTime));
-            }
+            double startTime = song.getSavedTime();
+            
+            mediaPlayer.setStartTime(Duration.millis(startTime));
             
             mediaPlayer.play();
             setReproducing(true);
             setCurrentSong(song);
-            currentIndex = playlist.indexOf(song);
+            currentIndex = playlist.indexOf(song); // Imposta l'indice alla nuova canzone corrente
             
             mediaPlayer.setOnEndOfMedia(() -> {
                 mediaPlayer.stop();
-                if (looping) {
-                    start(playlist.get(currentIndex));
-                } else if (shuffling) {
+                if(isLooping()) {
+                    start(currentSong);
+                } else if (isShuffling()) {
                     start(getRandomSong());
-                } else if (currentIndex + 1 < playlist.size()) {
-                    int nextIndex = (currentIndex + 1) % playlist.size(); // Calcola l'indice della prossima canzone
-                    Song nextSong = playlist.get(nextIndex);
-                    songSemaphore.release(); // Rilascia il semaforo prima di riprodurre la prossima canzone
-                    start(nextSong); // Riproduce la prossima canzone
                 } else {
-                    setReproducing(false);
-                    songSemaphore.release(); // Rilascia il semaforo se non ci sono altre canzoni da riprodurre
+                    goForward(); // Cambia alla prossima canzone
                 }
             });
             
@@ -84,11 +75,10 @@ public class MusicPlayer implements Runnable {
         }
     }
 
-
     public void stop() {
         mediaPlayer.stop();
         setReproducing(false);
-        songSemaphore.release(); // Rilascia il semaforo quando la riproduzione viene interrotta
+        songSemaphore.release();
     }
 
     public void saveStoppedSong() {
@@ -100,22 +90,7 @@ public class MusicPlayer implements Runnable {
             currentSong.setSavedTime(currentTime);
         }
     }
-
-    public void resumeStoppedSong() {
-        // Verifica se ci sono informazioni salvate sulla canzone
-        if (currentSong.getSavedTime() != -1) {
-            // Imposta la posizione della canzone al tempo in cui è stata fermata
-        		System.out.println("1 "+ mediaPlayer.getCurrentTime());
-            mediaPlayer.setStartTime(Duration.millis(currentSong.getSavedTime()));
-            System.out.println("2 " + mediaPlayer.getCurrentTime());
-            // Carica la canzone
-            start(currentSong);
-            
-        } else {
-            System.out.println("Nessuna canzone precedentemente salvata.");
-        }
-    }
-
+    
     public void setLooping(boolean loop) {
         looping = loop;
     }
@@ -138,17 +113,19 @@ public class MusicPlayer implements Runnable {
     
     public void goBack() {
         if (currentIndex > 0) {
-            start(playlist.get(currentIndex - 1));
-        } else if (!playlist.isEmpty()) {
-            start(playlist.get(currentIndex));
+            currentIndex--; // Decrementa l'indice solo se è maggiore di zero
+        } else {
+            currentIndex = playlist.size() - 1; // Imposta l'indice alla fine della playlist se l'indice è zero
         }
+        setCurrentSong(playlist.get(currentIndex)); // Imposta la nuova canzone corrente
     }
 
     public void goForward() {
-        if (currentIndex < playlist.size() - 1) {
-            start(playlist.get(currentIndex + 1));
-        } else if (!playlist.isEmpty()) {
-            start(playlist.get(0));
+        if (!playlist.isEmpty()) { // Verifica se la playlist non è vuota
+            currentIndex = (currentIndex + 1) % playlist.size(); // Incrementa l'indice in modo circolare
+            setCurrentSong(playlist.get(currentIndex)); // Imposta la nuova canzone corrente
+        } else {
+        	System.out.println("frocio");
         }
     }
 

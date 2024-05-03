@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -202,6 +203,7 @@ public class Pannello extends JPanel {
         gbc_btnLoop.gridx = 5;
         gbc_btnLoop.gridy = 0;
         CommandPanel.add(btnLoop);
+      
         
         songReproducing = new JTextArea();
         songReproducing.setForeground(Color.WHITE);
