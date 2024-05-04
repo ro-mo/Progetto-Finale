@@ -3,7 +3,6 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import model.MusicPlayer;
 import model.Song;
@@ -13,8 +12,8 @@ public class Controller implements ActionListener {
     
     private MusicPlayer musicPlayer;
     private Pannello pannello;
-    private String PlaylistName;
     private ArrayList<String> playlists;
+    private ArrayList<Song> songs;
 
     public Controller(MusicPlayer musicPlayer, Pannello pannello) {
         this.musicPlayer = musicPlayer;
@@ -28,15 +27,18 @@ public class Controller implements ActionListener {
     }
     
     public void changePlaylist(ActionEvent e) {
-    	String playlist = e.getActionCommand();
-    	if(playlists.contains(playlist)) {
-        	System.out.println("Generating songs button for playlist: " + playlist);
+        String playlist = e.getActionCommand();
+        if(playlists.contains(playlist)) {
+            System.out.println("Generating songs button for playlist: " + playlist);
             pannello.clearSongButtons();
             pannello.generateSongsButton(musicPlayer.allSongs, this, playlist);
-            PlaylistName = playlist;
-    	}
+            
+            songs = musicPlayer.allSongs.get(playlist);
+            musicPlayer.setCurrentIndex(0);
+            
+        }
     }
-    
+
     public void displaySongs(ActionEvent e, ArrayList<Song> songs) {
         String strIndex = e.getActionCommand();
         try {
@@ -56,8 +58,7 @@ public class Controller implements ActionListener {
                 }
             }
         } catch (NumberFormatException ex) {
-            // Handle the case where the action command is not a valid integer
-            System.err.println("Invalid index: " + strIndex);
+        	
         }
     }
 
@@ -92,10 +93,9 @@ public class Controller implements ActionListener {
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("back")) {
             musicPlayer.stop();
-            musicPlayer.goBack();
-            System.out.println(musicPlayer.getPlaylist());
-            System.out.println(musicPlayer.getCurrentSong());
+            musicPlayer.goBack(songs);
             musicPlayer.start(musicPlayer.getCurrentSong()); // Avvia la riproduzione della nuova canzone corrente
+            System.out.println("current song: " + musicPlayer.getCurrentSong());
             pannello.setText(musicPlayer.getCurrentSong().toString());
         }
     }
@@ -104,8 +104,10 @@ public class Controller implements ActionListener {
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("forward") && musicPlayer.getCurrentSong() != null) {
             musicPlayer.stop();
-            musicPlayer.goForward();
+            musicPlayer.goForward(songs);
             musicPlayer.start(musicPlayer.getCurrentSong()); // Avvia la riproduzione della nuova canzone corrente
+            System.out.println("current song: " + musicPlayer.getCurrentSong());
+            System.out.println("current index: " + musicPlayer.getCurrentIndex());
             pannello.setText(musicPlayer.getCurrentSong().toString());
         }
     }
@@ -116,6 +118,7 @@ public class Controller implements ActionListener {
     	if(command.equalsIgnoreCase("loop")) {
     		musicPlayer.setLooping(!musicPlayer.isLooping());
     		System.out.println("Loop - " + musicPlayer.isLooping());
+    		pannello.setBtnLoop(musicPlayer.isLooping());
     	}
     }
     
@@ -123,6 +126,7 @@ public class Controller implements ActionListener {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("shuffle")) {
     		musicPlayer.setShuffling(!musicPlayer.isShuffling());
+    		pannello.setBtnShuffle(musicPlayer.isShuffling());
     	}
     }
     
@@ -132,7 +136,6 @@ public class Controller implements ActionListener {
         
         changePlaylist(e);
         
-        ArrayList<Song> songs = musicPlayer.getPlaylistSongs(PlaylistName);
         displaySongs(e, songs);
         
         stopSong(e);

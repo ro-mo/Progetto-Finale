@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,6 +26,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 
 public class Pannello extends JPanel {
 
@@ -220,6 +220,7 @@ public class Pannello extends JPanel {
     }
 
 	public void generateSongsButton(HashMap<String, ArrayList<Song>> allSongs, Controller c, String playlistName) {
+		mainPanel.removeAll();
 	    ArrayList<Song> songs = allSongs.get(playlistName);
 	    System.out.println(songs.toString());
 	    
@@ -323,6 +324,14 @@ public class Pannello extends JPanel {
 	}
 	public void setText(String text) {
 		songReproducing.setText(text);
+	}
+	
+	public void setBtnLoop(boolean isLooping) {
+		btnLoop.setBorderPainted(isLooping);
+	}
+	
+	public void setBtnShuffle(boolean isShuffling) {
+		btnShuffle.setBorderPainted(isShuffling);
 	}
 	
 	public void popup(String text) {

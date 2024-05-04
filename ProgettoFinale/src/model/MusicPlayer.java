@@ -20,7 +20,8 @@ public class MusicPlayer implements Runnable {
     private boolean looping = false;
     private boolean shuffling = false;
     
-    public static String standardPath = "C:\\Users\\Edoardo Menegazzi\\eclipse-workspace\\ProgettoFinale\\ProgettoFinale\\src\\progetto_finale_songs";
+    //public static String standardPath = "C:\\Users\\Edoardo Menegazzi\\eclipse-workspace\\ProgettoFinale\\ProgettoFinale\\src\\progetto_finale_songs";
+    public static String standardPath = "/Users/matteo/Documents/progettoFinale/src/progetto_finale_songs";
     public HashMap<String, ArrayList<Song>> allSongs;
     
     public MusicPlayer() {
@@ -30,17 +31,7 @@ public class MusicPlayer implements Runnable {
     
     @Override
     public void run() {
-        while (true) {
-            if (!reproducing && !playlist.isEmpty()) {
-                start(playlist.get((currentIndex + 1) % playlist.size()));
-                
-            }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    	
     }
 
     public void start(Song song) {
@@ -60,8 +51,6 @@ public class MusicPlayer implements Runnable {
                     start(currentSong);
                 } else if (isShuffling()) {
                     start(getRandomSong());
-                } else {
-                    goForward();
                 }
             });
         } catch (InterruptedException e) {
@@ -70,7 +59,7 @@ public class MusicPlayer implements Runnable {
     }
 
     public void stop() {
-        mediaPlayer.stop();
+        mediaPlayer.pause();
         setReproducing(false);
         songSemaphore.release();
     }
@@ -107,7 +96,7 @@ public class MusicPlayer implements Runnable {
         }
     }
 
-    public void goBack() {
+    public void goBack(ArrayList<Song> playlist) {
         if (playlist.isEmpty()) {
             System.out.println("La playlist è vuota.");
             return;
@@ -117,7 +106,7 @@ public class MusicPlayer implements Runnable {
         setCurrentSong(playlist.get(currentIndex));
     }
 
-    public void goForward() {
+    public void goForward(ArrayList<Song> playlist) {
         if (playlist.isEmpty()) {
             System.out.println("La playlist è vuota.");
             return;
@@ -126,8 +115,7 @@ public class MusicPlayer implements Runnable {
         currentIndex = (currentIndex + 1) % playlist.size();
         setCurrentSong(playlist.get(currentIndex));
     }
-
-
+    
     public Song getRandomSong() {
         if (!playlist.isEmpty()) {
             return playlist.get((int) (Math.random() * playlist.size()));
@@ -186,33 +174,6 @@ public class MusicPlayer implements Runnable {
         int duration = (int) media.getDuration().toMillis();
         return new Song(songTitle, songArtist, songFile.getAbsolutePath(), duration);
     }
-
-    public ArrayList<Song> getPlaylistSongs(String playlistName) {
-        ArrayList<Song> songs = allSongs.get(playlistName);
-        return songs;
-    }
-    
-    public void addPlaylist(String playlistName) {
-        String folderPath = standardPath + File.separator + playlistName;
-        File newFolder = new File(folderPath);
-        boolean success = newFolder.mkdir();
-        if (success) {
-            System.out.println("Cartella della playlist creata con successo: " + folderPath);
-        } else {
-            System.out.println("Impossibile creare la cartella della playlist: " + folderPath);
-        }
-    }
-    
-    public void removePlaylistFolder(String playlistName) {
-        String folderPath = standardPath + File.separator + playlistName;
-        File playlistFolder = new File(folderPath);
-        boolean success = playlistFolder.delete();
-        if (success) {
-            System.out.println("Playlist rimossa con successo");
-        } else {
-            System.out.println("Impossibile rimuovere la playlist");
-        }
-    }
     
     public ArrayList<String> getPlaylists(){
         ArrayList<String> playlists = new ArrayList<>();
@@ -263,7 +224,5 @@ public class MusicPlayer implements Runnable {
 	public void setPlaylist(ArrayList<Song> playlist) {
 		this.playlist = playlist;
 	}
-    
-    
 }
 
