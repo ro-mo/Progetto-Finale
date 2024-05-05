@@ -401,13 +401,4 @@ public class Pannello extends JPanel {
 		btnShuffle.setBorderPainted(isShuffling);
 	}
 	
-	/**
-     * Visualizza un popup con un determinato messaggio.
-     * 
-     * @param text Il testo da visualizzare nel popup
-     */
-	public void popup(String text) {
-		JOptionPane.showMessageDialog(this, text);
-	}
-	
 }
