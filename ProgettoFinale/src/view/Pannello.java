@@ -64,7 +64,6 @@ public class Pannello extends JPanel {
 	JTextArea songReproducing;
 	JPanel PlaylistPanel, CommandPanel, mainPanel;
 	JLabel logo, welcome;
-	JSlider volumeSlider;
 	
 	/**
      * Costruttore della classe Pannello. Inizializza e configura il pannello
