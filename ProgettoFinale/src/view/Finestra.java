@@ -12,7 +12,7 @@ public class Finestra extends JFrame implements WindowListener{
 	
 	public Finestra() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1280, 720);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(true);
         setLocationRelativeTo(null);
         setName("Javify");

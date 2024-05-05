@@ -24,6 +24,7 @@ public class Controller implements ActionListener {
         this.pannello.generatePlaylistButton(playlists, this);
         this.musicPlayer.setLooping(false);
         this.musicPlayer.setShuffling(false);
+        this.pannello.setTextAreaVisible(musicPlayer.isReproducing());
     }
     
     public void changePlaylist(ActionEvent e) {
@@ -33,7 +34,8 @@ public class Controller implements ActionListener {
             pannello.clearSongButtons();
             pannello.generateSongsButton(musicPlayer.allSongs, this, playlist);
             
-            songs = musicPlayer.allSongs.get(playlist);
+            musicPlayer.loadPlaylist(playlist);
+            songs = musicPlayer.playlist;
             musicPlayer.setCurrentIndex(0);
             
         }
@@ -48,6 +50,7 @@ public class Controller implements ActionListener {
                     musicPlayer.start(songs.get(index));
                     pannello.setText(songs.get(index).toString());
                     pannello.setIsReproducing();
+                    pannello.setTextAreaVisible(musicPlayer.isReproducing());
                     return;
                 } else {
                     musicPlayer.stop();
@@ -55,6 +58,7 @@ public class Controller implements ActionListener {
                     musicPlayer.start(songs.get(index));
                     pannello.setText(songs.get(index).toString());
                     pannello.setIsReproducing();
+                    pannello.setTextAreaVisible(musicPlayer.isReproducing());
                 }
             }
         } catch (NumberFormatException ex) {
@@ -62,7 +66,6 @@ public class Controller implements ActionListener {
         }
     }
 
-    
     public void stopSong(ActionEvent e) {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("pause")) {
@@ -81,9 +84,11 @@ public class Controller implements ActionListener {
 		    	if (musicPlayer.getCurrentSong().getSavedTime() == 0 && !musicPlayer.isReproducing()) {
 		            musicPlayer.start(musicPlayer.getRandomSong());
 		            pannello.setIsReproducing();
+		            pannello.setTextAreaVisible(musicPlayer.isReproducing());
 		        } else if (musicPlayer.getCurrentSong().getSavedTime() != 0 && !musicPlayer.isReproducing()) {
 		        	musicPlayer.start(musicPlayer.getCurrentSong());
 		        	pannello.setIsReproducing();
+		        	pannello.setTextAreaVisible(musicPlayer.isReproducing());
 		        }
     		}
     	}

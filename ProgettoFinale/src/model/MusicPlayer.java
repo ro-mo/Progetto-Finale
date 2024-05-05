@@ -8,12 +8,12 @@ import java.util.concurrent.Semaphore;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import view.Pannello;
 
 public class MusicPlayer implements Runnable {
     
     private Semaphore songSemaphore = new Semaphore(1);
     private MediaPlayer mediaPlayer;
-    private ArrayList<Song> playlist;
     private int currentIndex = -1;
     private Song currentSong;
     private boolean reproducing = false;
@@ -23,10 +23,11 @@ public class MusicPlayer implements Runnable {
     //public static String standardPath = "C:\\Users\\Edoardo Menegazzi\\eclipse-workspace\\ProgettoFinale\\ProgettoFinale\\src\\progetto_finale_songs";
     public static String standardPath = "/Users/matteo/Documents/progettoFinale/src/progetto_finale_songs";
     public HashMap<String, ArrayList<Song>> allSongs;
+    public ArrayList<Song> playlist;
+    Pannello pannello = new Pannello();
     
     public MusicPlayer() {
-        playlist = new ArrayList<>();
-        allSongs = new HashMap<>();
+    	
     }
     
     @Override
@@ -44,15 +45,35 @@ public class MusicPlayer implements Runnable {
             mediaPlayer.play();
             setReproducing(true);
             setCurrentSong(song);
+            System.out.println("current song: " + getCurrentSong());
+            System.out.println("current index: " + getCurrentIndex());
             currentIndex = playlist.indexOf(song);
+            
             mediaPlayer.setOnEndOfMedia(() -> {
                 mediaPlayer.stop();
                 if(isLooping()) {
-                    start(currentSong);
+                	mediaPlayer.setStartTime(Duration.millis(0));
+                	mediaPlayer.play();
                 } else if (isShuffling()) {
-                    start(getRandomSong());
+                	Song newSong = getRandomSong();
+                	Media mediaNewSong = new Media(new File(newSong.getPath()).toURI().toString());
+                	mediaPlayer = new MediaPlayer(mediaNewSong);
+                	mediaPlayer.setStartTime(Duration.millis(0));
+                	mediaPlayer.play();
+                    setCurrentSong(newSong);
+                } else if(isLooping() && isShuffling()){
+                	mediaPlayer.setStartTime(Duration.millis(0));
+                	mediaPlayer.play();
+                } else {
+                	goForward(playlist);
+                	Media mediaNewSong = new Media(new File(currentSong.getPath()).toURI().toString());
+                	mediaPlayer = new MediaPlayer(mediaNewSong);
+                	mediaPlayer.setStartTime(Duration.millis(0));
+                	mediaPlayer.play();
+                	pannello.setText(currentSong.toString()); 
                 }
             });
+            
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -87,15 +108,6 @@ public class MusicPlayer implements Runnable {
         return shuffling;
     }
     
-    public void addToPlaylist(Song song) {
-        if (!playlist.contains(song)) {
-            playlist.add(song);
-        }
-        if (!playlist.isEmpty() && currentIndex == -1) {
-            currentIndex = 0;
-        }
-    }
-
     public void goBack(ArrayList<Song> playlist) {
         if (playlist.isEmpty()) {
             System.out.println("La playlist è vuota.");
@@ -134,6 +146,7 @@ public class MusicPlayer implements Runnable {
     }
     
     public HashMap<String, ArrayList<Song>> loadAllSongs(String parentFolderPath) {
+        allSongs = new HashMap<>();
         File parentFolder = new File(parentFolderPath);
         if (parentFolder.exists() && parentFolder.isDirectory()) {
             File[] playlistFolders = parentFolder.listFiles(File::isDirectory);
@@ -153,8 +166,6 @@ public class MusicPlayer implements Runnable {
                     }
                     String playlistName = playlistFolder.getName();
                     allSongs.put(playlistName, songsInPlaylist);
-                    System.out.println("LoadAllSongs:\n" + allSongs.keySet());
-                    loadPlaylist(playlistName);
                 }
             } else {
                 System.out.println("Playlist non esistenti");
