@@ -1,3 +1,7 @@
+/**
+ * Questa classe rappresenta il controller del programma, gestisce gli eventi dell'interfaccia grafica
+ * e coordina le azioni tra il modello e la vista.
+ */
 package controller;
 
 import java.awt.event.ActionEvent;
@@ -8,6 +12,9 @@ import model.MusicPlayer;
 import model.Song;
 import view.Pannello;
 
+/**
+ * La classe Controller implementa ActionListener per gestire gli eventi dell'interfaccia grafica.
+ */
 public class Controller implements ActionListener {
     
     private MusicPlayer musicPlayer;
@@ -15,6 +22,11 @@ public class Controller implements ActionListener {
     private ArrayList<String> playlists;
     private ArrayList<Song> songs;
 
+    /**
+     * Costruttore della classe Controller.
+     * @param musicPlayer Il player musicale.
+     * @param pannello Il pannello dell'interfaccia grafica.
+     */
     public Controller(MusicPlayer musicPlayer, Pannello pannello) {
         this.musicPlayer = musicPlayer;
         this.pannello = pannello;
@@ -27,6 +39,10 @@ public class Controller implements ActionListener {
         this.pannello.setTextAreaVisible(musicPlayer.isReproducing());
     }
     
+    /**
+     * Cambia la playlist corrente.
+     * @param e L'evento di azione.
+     */
     public void changePlaylist(ActionEvent e) {
         String playlist = e.getActionCommand();
         if(playlists.contains(playlist)) {
@@ -41,6 +57,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Visualizza le canzoni.
+     * @param e L'evento di azione.
+     * @param songs La lista delle canzoni.
+     */
     public void displaySongs(ActionEvent e, ArrayList<Song> songs) {
         String strIndex = e.getActionCommand();
         try {
@@ -66,6 +87,10 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Ferma la canzone corrente.
+     * @param e L'evento di azione.
+     */
     public void stopSong(ActionEvent e) {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("pause")) {
@@ -77,6 +102,10 @@ public class Controller implements ActionListener {
     	}	
     }
     
+    /**
+     * Riproduce la canzone.
+     * @param e L'evento di azione.
+     */
     public void playSong(ActionEvent e) {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("play")) {
@@ -94,6 +123,10 @@ public class Controller implements ActionListener {
     	}
     }
     
+    /**
+     * Torna alla canzone precedente.
+     * @param e L'evento di azione.
+     */
     public void backSong(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("back")) {
@@ -105,6 +138,10 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Passa alla canzone successiva.
+     * @param e L'evento di azione.
+     */
     public void forwardSong(ActionEvent e) {
         String command = e.getActionCommand();
         if (command.equalsIgnoreCase("forward") && musicPlayer.getCurrentSong() != null) {
@@ -117,7 +154,10 @@ public class Controller implements ActionListener {
         }
     }
 
-    
+    /**
+     * Attiva o disattiva la modalità loop.
+     * @param e L'evento di azione.
+     */
     public void loopSong(ActionEvent e) {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("loop")) {
@@ -127,6 +167,10 @@ public class Controller implements ActionListener {
     	}
     }
     
+    /**
+     * Attiva o disattiva la modalità shuffle.
+     * @param e L'evento di azione.
+     */
     public void shuffleSong(ActionEvent e) {
     	String command = e.getActionCommand();
     	if(command.equalsIgnoreCase("shuffle")) {
@@ -135,6 +179,10 @@ public class Controller implements ActionListener {
     	}
     }
     
+    /**
+     * Gestisce gli eventi di azione.
+     * @param e L'evento di azione.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action Command: " + e.getActionCommand());
@@ -153,4 +201,3 @@ public class Controller implements ActionListener {
     }
 
 }
-

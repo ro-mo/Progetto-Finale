@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.JPanel;
 
+import javax.swing.JSlider;
 import model.MusicPlayer;
 import model.Song;
 import controller.Controller;
@@ -28,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
 
 public class Pannello extends JPanel {
 
@@ -59,6 +61,7 @@ public class Pannello extends JPanel {
 	JTextArea songReproducing;
 	JPanel PlaylistPanel, CommandPanel, mainPanel;
 	JLabel logo, welcome;
+	JSlider volumeSlider;
 	
 	public Pannello() {
 		setBackground(new Color(51, 51, 51));
@@ -205,10 +208,10 @@ public class Pannello extends JPanel {
       
         
         songReproducing = new JTextArea();
+        songReproducing.setEditable(false);
         songReproducing.setForeground(Color.BLACK);
         songReproducing.setBackground(Color.LIGHT_GRAY);
         songReproducing.setAlignmentX(CENTER_ALIGNMENT);
-        songReproducing.setEditable(false);
         songReproducing.setBorder(new EmptyBorder(10, 10, 10, 10));
         GridBagConstraints gbc_textArea = new GridBagConstraints();
         gbc_textArea.gridwidth = 7;

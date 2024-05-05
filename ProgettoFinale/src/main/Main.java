@@ -17,7 +17,7 @@ public class Main extends Application{
 	@Override
 	public void start(Stage primaryStage) {
 		Finestra frame = new Finestra();
-		MusicPlayer model = new MusicPlayer();
+		MusicPlayer model = new MusicPlayer(frame.getPannello());
 		Controller controller = new Controller(model, frame.getPannello());
 	}
 
