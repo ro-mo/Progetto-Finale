@@ -30,13 +30,16 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
-
+/**
+ * La classe Pannello estende JPanel e rappresenta il pannello principale
+ * dell'interfaccia grafica del programma.
+ */
 public class Pannello extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	ImageIcon iconimg1 = new ImageIcon(getClass().getResource("/images/logo.png"));
-	Image icon = iconimg1.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+	Image icon = iconimg1.getImage().getScaledInstance(500, -1, Image.SCALE_SMOOTH);
 	ImageIcon iconimg = new ImageIcon(icon);
 	ImageIcon shuffleimg1 = new ImageIcon(getClass().getResource("/images/shuffle.png"));
 	Image shuffle = shuffleimg1.getImage().getScaledInstance(30, -1, Image.SCALE_SMOOTH);
@@ -63,6 +66,10 @@ public class Pannello extends JPanel {
 	JLabel logo, welcome;
 	JSlider volumeSlider;
 	
+	/**
+     * Costruttore della classe Pannello. Inizializza e configura il pannello
+     * principale dell'interfaccia grafica.
+     */
 	public Pannello() {
 		setBackground(new Color(51, 51, 51));
 	    setLayout(new GridBagLayout());
@@ -223,6 +230,16 @@ public class Pannello extends JPanel {
 
     }
 
+	/**
+     * Genera i pulsanti delle canzoni per una determinata playlist.
+     * 
+     * @param allSongs     Un oggetto HashMap che contiene tutte le canzoni
+     *                     raggruppate per playlist
+     * @param c            Il controller che gestisce gli eventi dell'interfaccia
+     *                     grafica
+     * @param playlistName Il nome della playlist per cui generare i pulsanti delle
+     *                     canzoni
+     */
 	public void generateSongsButton(HashMap<String, ArrayList<Song>> allSongs, Controller c, String playlistName) {
 		mainPanel.removeAll();
 	    ArrayList<Song> songs = allSongs.get(playlistName);
@@ -270,6 +287,13 @@ public class Pannello extends JPanel {
 
 	}
 
+	/**
+     * Genera i pulsanti delle playlist disponibili.
+     * 
+     * @param playlist Un elenco di nomi di playlist
+     * @param c        Il controller che gestisce gli eventi dell'interfaccia
+     *                 grafica
+     */
 	public void generatePlaylistButton(ArrayList<String> playlist, Controller c) {
 	    PlaylistPanel.removeAll();
 	    
@@ -296,6 +320,11 @@ public class Pannello extends JPanel {
 	    PlaylistPanel.revalidate();
 	}
 
+	/**
+     * Registra gli eventi dell'interfaccia grafica con il controller.
+     * 
+     * @param c Il controller che gestisce gli eventi dell'interfaccia grafica
+     */
 	public void registraEventi(Controller c) {
 		btnShuffle.addActionListener(c);
 		btnBack.addActionListener(c);
@@ -305,6 +334,9 @@ public class Pannello extends JPanel {
 		btnPause.addActionListener(c);
 	}
 	
+	/**
+     * Rimuove i pulsanti delle canzoni dal pannello principale.
+     */
 	public void clearSongButtons() {
 	    Component[] components = mainPanel.getComponents();
 	    for (Component component : components) {
@@ -317,31 +349,64 @@ public class Pannello extends JPanel {
 	    mainPanel.repaint();
 	}
 
+	/**
+     * Imposta lo stato di riproduzione dei pulsanti di play/pausa.
+     */
 	public void setIsReproducing() {
 	    btnPlay.setVisible(false);
 	    btnPause.setVisible(true);
 	}
 
+	/**
+     * Imposta lo stato dei pulsanti di play/pausa quando la riproduzione è in
+     * pausa.
+     */
 	public void setIsPause() {
 	    btnPlay.setVisible(true);
 	    btnPause.setVisible(false);
 	}
+	
+	/**
+     * Imposta il testo visualizzato nella JTextArea per la canzone in riproduzione.
+     * 
+     * @param text Il testo da visualizzare
+     */
 	public void setText(String text) {
 		songReproducing.setText(text);
 	}
 	
+	/**
+     * Imposta la visibilità della JTextArea per la canzone in riproduzione.
+     * 
+     * @param isReproducing True se la canzone è in riproduzione, altrimenti False
+     */
 	public void setTextAreaVisible(boolean isReproducing) {
 		songReproducing.setVisible(isReproducing);
 	}
 	
+	/**
+     * Imposta lo stato del pulsante di loop.
+     * 
+     * @param isLooping True se il loop è attivato, altrimenti False
+     */
 	public void setBtnLoop(boolean isLooping) {
 		btnLoop.setBorderPainted(isLooping);
 	}
 	
+	/**
+     * Imposta lo stato del pulsante di shuffle.
+     * 
+     * @param isShuffling True se lo shuffle è attivato, altrimenti False
+     */
 	public void setBtnShuffle(boolean isShuffling) {
 		btnShuffle.setBorderPainted(isShuffling);
 	}
 	
+	/**
+     * Visualizza un popup con un determinato messaggio.
+     * 
+     * @param text Il testo da visualizzare nel popup
+     */
 	public void popup(String text) {
 		JOptionPane.showMessageDialog(this, text);
 	}
